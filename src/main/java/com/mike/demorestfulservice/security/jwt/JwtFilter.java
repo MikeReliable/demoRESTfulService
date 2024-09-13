@@ -28,20 +28,11 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String token = getTokenFromRequest(request);
+        String token = jwtService.getTokenFromRequest(request);
         if (token != null) {
             setCustomDetailsToSecurityContextHolder(token);
         }
         filterChain.doFilter(request, response);
-
-    }
-
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
     }
 
     private void setCustomDetailsToSecurityContextHolder(String token) {
