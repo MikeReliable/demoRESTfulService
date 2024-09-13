@@ -1,8 +1,7 @@
 package com.mike.demorestfulservice.security.jwt;
 
 import com.mike.demorestfulservice.dto.JwtAuthenticationDto;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,5 +70,34 @@ public class JwtService {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    public boolean validateJwtToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith(getSignKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+            return true;
+        } catch (ExpiredJwtException e) {
+            LOGGER.error("Expired JWT Exception", e);
+        } catch (UnsupportedJwtException e) {
+            LOGGER.error("Unsupported JWT Exception", e);
+        } catch (MalformedJwtException e) {
+            LOGGER.error("Malformed JWT Exception", e);
+        } catch (SecurityException e) {
+            LOGGER.error("Security Exception", e);
+        } catch (Exception e) {
+            LOGGER.error("Invalid token", e);
+        }
+        return false;
+    }
+
+    public JwtAuthenticationDto refreshAuthToken(String email, String refreshToken) {
+        JwtAuthenticationDto jwtAuthenticationDto = new JwtAuthenticationDto();
+        jwtAuthenticationDto.setToken(generateJwtToken(email));
+        jwtAuthenticationDto.setRefreshToken(refreshToken);
+        return jwtAuthenticationDto;
     }
 }
