@@ -3,7 +3,6 @@ package com.mike.demorestfulservice.controller;
 import com.mike.demorestfulservice.dto.UserDto;
 import com.mike.demorestfulservice.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ public class UserController {
             UserDto userDto = userService.getUserById(id);
             userDto.setPassword(null);
             return ResponseEntity.ok(userDto);
-        } catch (ChangeSetPersister.NotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException("No user found with id=" + id);
         }
     }
@@ -34,7 +33,7 @@ public class UserController {
             UserDto userDto = userService.getUserByEmail(email);
             userDto.setPassword(null);
             return ResponseEntity.ok(userDto);
-        } catch (ChangeSetPersister.NotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException("No user found with email=" + email);
         }
     }
