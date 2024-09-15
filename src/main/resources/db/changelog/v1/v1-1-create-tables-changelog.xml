@@ -1,0 +1,105 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="v1-1-1" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+        <createTable tableName="users">
+            <column name="user_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false"
+                             primaryKey="true"/>
+            </column>
+            <column name="email" type="varchar(100)">
+                <constraints nullable="false"
+                             unique="true"/>
+            </column>
+            <column name="first_name" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="varchar(60)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="v1-1-2" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="tasks"/>
+            </not>
+        </preConditions>
+        <createTable tableName="tasks">
+            <column name="task_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false"
+                             primaryKey="true"/>
+            </column>
+            <column name="priority" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="executor" type="bigint">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="v1-1-3" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="token_black_list"/>
+            </not>
+        </preConditions>
+        <createTable tableName="token_black_list">
+            <column name="token_id" type="bigint" autoIncrement="true">
+                <constraints nullable="false"
+                             primaryKey="true"/>
+            </column>
+            <column name="token" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="v1-1-4" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="comments"/>
+            </not>
+        </preConditions>
+        <createTable tableName="comments">
+            <column name="comment_id" type="bigint"
+                    autoIncrement="true">
+                <constraints nullable="false"
+                             primaryKey="true"/>
+            </column>
+            <column name="text" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task" type="bigint">
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

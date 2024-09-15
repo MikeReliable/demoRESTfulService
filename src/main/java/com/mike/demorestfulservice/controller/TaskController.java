@@ -19,7 +19,7 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @GetMapping("/author/{userId}/")
+    @GetMapping("/author/{userId}")
     public ResponseEntity<TaskListResponseDto> getAllTasksByAuthor(@PathVariable Long userId,
                                                                    @MatrixVariable(value = "fields", pathVar = "id", required = false) List<String> fields,
                                                                    @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
@@ -29,7 +29,7 @@ public class TaskController {
         return new ResponseEntity<>(taskService.getAllTasksByAuthor(userId, fields, pageNo, pageSize, priority, status), HttpStatus.OK);
     }
 
-    @GetMapping("/executor/{userId}/")
+    @GetMapping("/executor/{userId}")
     public ResponseEntity<TaskListResponseDto> getAllTasksByExecutor(@PathVariable Long userId,
                                                                      @MatrixVariable(value = "fields", pathVar = "id", required = false) List<String> fields,
                                                                      @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
@@ -41,14 +41,14 @@ public class TaskController {
 
     @PostMapping("/{userId}/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TaskDto> createTask(@RequestHeader String token,
+    public ResponseEntity<TaskDto> createTask(@RequestHeader("authorization") String token,
                                               @PathVariable Long userId,
                                               @RequestBody TaskDto taskDto) throws Exception {
         return new ResponseEntity<>(taskService.createTask(token, userId, taskDto), HttpStatus.CREATED);
     }
 
 
-    @GetMapping("/{taskId}/")
+    @GetMapping("/{taskId}")
     public ResponseEntity<TaskCommentsDto> getTask(@PathVariable Long taskId) throws Exception {
         return new ResponseEntity<>(taskService.getTask(taskId), HttpStatus.OK);
     }

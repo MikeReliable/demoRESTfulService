@@ -1,0 +1,62 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="v1-2-1" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tasks"/>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="author"
+                                 baseTableName="tasks"
+                                 constraintName="author"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="v1-2-2" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tasks"/>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="executor"
+                                 baseTableName="tasks"
+                                 constraintName="executor"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="v1-2-3" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="token_black_list"/>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="token_black_list"
+                                 constraintName="user_id"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="v1-2-4" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="comments"/>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="author"
+                                 baseTableName="comments"
+                                 constraintName="commentAuthor"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="v1-2-5" author="Mike">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="comments"/>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="task"
+                                 baseTableName="comments"
+                                 constraintName="task"
+                                 referencedColumnNames="task_id"
+                                 referencedTableName="tasks"/>
+    </changeSet>
+
+</databaseChangeLog>
