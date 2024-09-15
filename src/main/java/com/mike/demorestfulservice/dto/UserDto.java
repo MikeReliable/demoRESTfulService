@@ -1,6 +1,7 @@
 package com.mike.demorestfulservice.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -23,4 +24,9 @@ public class UserDto {
     @NotBlank
     @Size(min = 6, max = 20, message = "Password length must be from 6 to 20 characters")
     String password;
+
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
 }

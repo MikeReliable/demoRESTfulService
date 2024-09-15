@@ -13,9 +13,9 @@ public interface UserService {
 
     JwtAuthenticationDto login(UserCredentialsDto userCredentialsDto) throws AuthenticationException;
 
-    UserDto getUserById(String id) throws Exception;
+    UserDto getUserById(String id) throws AuthenticationException;
 
-    UserDto getUserByEmail(String email) throws Exception;
+    UserDto getUserByEmail(String email) throws AuthenticationException;
 
     JwtAuthenticationDto refreshToken(RefreshTokenDto refreshTokenDto) throws Exception;
 

@@ -5,13 +5,19 @@ import com.mike.demorestfulservice.dto.TaskCommentsDto;
 import com.mike.demorestfulservice.dto.TaskDto;
 import com.mike.demorestfulservice.dto.TaskListResponseDto;
 import com.mike.demorestfulservice.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/task")
@@ -49,25 +55,29 @@ public class TaskController {
 
 
     @GetMapping("/{taskId}")
+    @Cacheable(value = "task", key = "#taskId")
     public ResponseEntity<TaskCommentsDto> getTask(@PathVariable Long taskId) throws Exception {
         return new ResponseEntity<>(taskService.getTask(taskId), HttpStatus.OK);
     }
 
     @PutMapping("/author/{taskId}")
+    @CachePut(value = "task", key = "#taskId")
     public ResponseEntity<TaskDto> updateTaskByAuthor(@RequestHeader("authorization") String token,
                                                       @PathVariable Long taskId,
-                                                      @RequestBody TaskDto taskDto) throws Exception {
+                                                      @RequestBody @Valid TaskDto taskDto) throws Exception {
         return new ResponseEntity<>(taskService.updateTaskByAuthor(token, taskId, taskDto), HttpStatus.OK);
     }
 
     @PutMapping("/executor/{taskId}")
+    @CachePut(value = "task", key = "#taskId")
     public ResponseEntity<TaskDto> updateTaskByExecutor(@RequestHeader("authorization") String token,
                                                         @PathVariable Long taskId,
-                                                        @RequestBody TaskDto taskDto) {
+                                                        @RequestBody @Valid TaskDto taskDto) {
         return new ResponseEntity<>(taskService.updateTaskByExecutor(token, taskId, taskDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}/{taskId}")
+    @CacheEvict(value = "task", key = "#taskId")
     public ResponseEntity<String> deleteTask(@RequestHeader("authorization") String token,
                                              @PathVariable Long userId,
                                              @PathVariable Long taskId) {
@@ -76,10 +86,11 @@ public class TaskController {
     }
 
     @PostMapping("/{taskId}/comment")
+    @CachePut(value = "task", key = "#taskId")
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<TaskCommentsDto> createComment(@RequestHeader("authorization") String token,
+    public ResponseEntity<TaskCommentsDto> createComment(@RequestHeader("authorization") String token,
                                                   @PathVariable Long taskId,
-                                                  @RequestBody CommentDto commentDto) {
+                                                  @RequestBody @Valid CommentDto commentDto) {
         return new ResponseEntity<>(taskService.createComment(token, taskId, commentDto), HttpStatus.CREATED);
     }
 

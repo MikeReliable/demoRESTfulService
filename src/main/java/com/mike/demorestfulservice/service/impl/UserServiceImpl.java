@@ -13,7 +13,6 @@ import com.mike.demorestfulservice.security.jwt.JwtService;
 import com.mike.demorestfulservice.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -63,15 +62,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(String id) throws ChangeSetPersister.NotFoundException {
+    public UserDto getUserById(String id) throws AuthenticationException {
         return entityMapper.toUserDto(userRepository.findByUserId(Long.valueOf(id))
-                .orElseThrow(ChangeSetPersister.NotFoundException::new));
+                .orElseThrow(() -> new AuthenticationException("Email or password is incorrect")));
     }
 
     @Override
-    public UserDto getUserByEmail(String email) throws ChangeSetPersister.NotFoundException {
+    public UserDto getUserByEmail(String email) throws AuthenticationException {
         return entityMapper.toUserDto(userRepository.findByEmail(email)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new));
+                .orElseThrow(() -> new AuthenticationException("Email or password is incorrect")));
     }
 
     @Override
