@@ -2,6 +2,7 @@ package com.mike.demorestfulservice.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Schema(description = "User information")
 public class UserDto {
     String userId;
     @NotBlank

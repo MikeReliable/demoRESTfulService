@@ -1,5 +1,6 @@
 package com.mike.demorestfulservice.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@Schema(description = "All tasks with filtering and paging")
 public class TaskListResponseDto {
 
     private List<TaskDto> taskList;
