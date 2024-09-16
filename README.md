@@ -39,7 +39,7 @@ To build and run the project, follow these steps:
 * Clone the repository: `git clone https://github.com/MikeReliable/demoRESTfulService.git`
 * Navigate to the project directory: cd demoRESTfulService
 * Build the project: mvn clean install
-* Build the docker image: docker build -t demoRESTfulService .
+* Build the docker image: docker build -t demorestfulservice .
 * Download PosrgreSQL docker image: docker pull postgres:16
 * Run the docker-compose file: docker-compose up
 
