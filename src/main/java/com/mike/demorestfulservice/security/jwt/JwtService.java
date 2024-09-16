@@ -26,10 +26,10 @@ public class JwtService {
     private String jwtSecret;
 
     public JwtAuthenticationDto generateAuthToken(String email) {
-        JwtAuthenticationDto authenticationDto = new JwtAuthenticationDto();
-        authenticationDto.setToken(generateJwtToken(email));
-        authenticationDto.setRefreshToken(generateRefreshToken(email));
-        return authenticationDto;
+        return JwtAuthenticationDto.builder()
+                .token(generateJwtToken(email))
+                .refreshToken(generateRefreshToken(email))
+                .build();
     }
 
     private String generateJwtToken(String email) {
@@ -95,9 +95,9 @@ public class JwtService {
     }
 
     public JwtAuthenticationDto refreshAuthToken(String email, String refreshToken) {
-        JwtAuthenticationDto jwtAuthenticationDto = new JwtAuthenticationDto();
-        jwtAuthenticationDto.setToken(generateJwtToken(email));
-        jwtAuthenticationDto.setRefreshToken(refreshToken);
-        return jwtAuthenticationDto;
+        return JwtAuthenticationDto.builder()
+                .token(generateJwtToken(email))
+                .refreshToken(refreshToken)
+                .build();
     }
 }

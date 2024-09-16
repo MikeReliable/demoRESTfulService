@@ -173,25 +173,20 @@ public class TaskServiceImpl implements TaskService {
         }
         List<TaskDto> content = new ArrayList<>();
         for (Task task : taskList) {
-            TaskDto taskDto = new TaskDto();
-            taskDto.setTaskId(task.getTaskId().toString());
-            taskDto.setText(task.getText());
-            taskDto.setStatus(task.getStatus().toString());
-            taskDto.setPriority(task.getPriority().toString());
-            taskDto.setAuthorId(task.getAuthor().getUserId().toString());
+            var taskDto = mapper.toTaskDto(task);
             if (task.getExecutor() != null) {
                 taskDto.setExecutorId(task.getExecutor().getUserId().toString());
             }
             content.add(taskDto);
         }
-        TaskListResponseDto responseDto = new TaskListResponseDto();
-        responseDto.setTaskList(content);
-        responseDto.setPageNo(tasks.getNumber());
-        responseDto.setPageSize(tasks.getSize());
-        responseDto.setTotalElements(tasks.getTotalElements());
-        responseDto.setTotalPages(tasks.getTotalPages());
-        responseDto.setLast(tasks.isLast());
-        return responseDto;
+        return TaskListResponseDto.builder()
+                .taskList(content)
+                .pageNo(tasks.getNumber())
+                .pageSize(tasks.getSize())
+                .totalElements(tasks.getTotalElements())
+                .totalPages(tasks.getTotalPages())
+                .last(tasks.isLast())
+                .build();
     }
 
     private Task filterFields(Task task, List<String> fields) {

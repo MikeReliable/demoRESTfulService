@@ -100,8 +100,8 @@ public class TaskController {
     @CachePut(value = "task", key = "#taskId")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<TaskCommentsDto> createComment(@RequestHeader("authorization") String token,
-                                                  @PathVariable Long taskId,
-                                                  @RequestBody @Valid CommentDto commentDto) {
+                                                         @PathVariable Long taskId,
+                                                         @RequestBody @Valid CommentDto commentDto) {
         return new ResponseEntity<>(taskService.createComment(token, taskId, commentDto), HttpStatus.CREATED);
     }
 

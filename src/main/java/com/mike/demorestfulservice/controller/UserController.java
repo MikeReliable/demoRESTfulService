@@ -1,6 +1,8 @@
 package com.mike.demorestfulservice.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.mike.demorestfulservice.dto.UserDto;
+import com.mike.demorestfulservice.entity.View;
 import com.mike.demorestfulservice.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +26,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/id/{id}")
+    @JsonView(View.UI.class)
     @Operation(summary = "Get user by Id")
     @Cacheable(value = "user", key = "#id")
     public ResponseEntity<UserDto> getUserById(@PathVariable String id) throws AuthenticationException {
@@ -31,6 +34,7 @@ public class UserController {
     }
 
     @GetMapping("/email/{email}")
+    @JsonView(View.UI.class)
     @Operation(summary = "Get user by Email")
     @Cacheable(value = "user", key = "#email")
     public ResponseEntity<UserDto> getUserByEmail(@PathVariable String email) throws AuthenticationException {
