@@ -23,7 +23,11 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 public class SecurityConfig {
 
     private static final String[] WHITE_LIST_URL = {
-            "/auth/**"
+            "/auth/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**",
+            "/api-docs*/**",
+            "/h2-console*/**"
     };
 
     private static final String[] AUTH_URL = {
