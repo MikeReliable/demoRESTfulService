@@ -9,14 +9,12 @@ import com.mike.demorestfulservice.entity.Task;
 import com.mike.demorestfulservice.entity.User;
 import com.mike.demorestfulservice.repository.TaskRepository;
 import com.mike.demorestfulservice.repository.UserRepository;
-import com.mike.demorestfulservice.service.TaskService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -36,16 +34,10 @@ class TaskControllerIntegrationTest {
     MockMvc mockMvc;
 
     @Autowired
-    private TaskService taskService;
-
-    @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private TaskController taskController;
 
     @Test
     void getAllTasksByAuthor_payLoadIsValid_ReturnsValidResponse() throws Exception {
@@ -59,7 +51,7 @@ class TaskControllerIntegrationTest {
         String token = mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andReturn().getResponse().getContentAsString().substring(10, 151);
         //when
-        mockMvc.perform(get("/task/author/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/tasks/authors/1").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Do the demo task")))
@@ -79,7 +71,7 @@ class TaskControllerIntegrationTest {
         String token = mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andReturn().getResponse().getContentAsString().substring(10, 151);
         //when
-        mockMvc.perform(get("/task/executor/2").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/tasks/executors/2").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Do the demo task")))
@@ -99,7 +91,7 @@ class TaskControllerIntegrationTest {
         String token = mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(json))
                 .andReturn().getResponse().getContentAsString().substring(10, 151);
         //when
-        mockMvc.perform(get("/task/3").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
+        mockMvc.perform(get("/tasks/3").contentType(MediaType.APPLICATION_JSON).header("Authorization", "Bearer " + token))
                 //then
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Do the demo task")))
@@ -128,7 +120,7 @@ class TaskControllerIntegrationTest {
         Gson gsonRequest = new Gson();
         String jsonRequest = gsonRequest.toJson(taskDto);
         //when
-        mockMvc.perform(post("/task/" + userId + "/create")
+        mockMvc.perform(post("/tasks/" + userId)
                         .header("authorization", "Bearer " + token)
                         .param("userId", userId)
                         .param("token", token)
@@ -164,7 +156,7 @@ class TaskControllerIntegrationTest {
         Gson gsonRequest = new Gson();
         String jsonRequest = gsonRequest.toJson(taskDto);
         //when
-        mockMvc.perform(put("/task/author/" + taskId)
+        mockMvc.perform(put("/tasks/" + taskId + "/authors")
                         .header("authorization", "Bearer " + token)
                         .param("taskId", taskId)
                         .param("token", token)
@@ -200,7 +192,7 @@ class TaskControllerIntegrationTest {
                 .build();
         taskRepository.save(task);
         //when
-        mockMvc.perform(delete("/task/" + userId + "/" + task.getTaskId())
+        mockMvc.perform(delete("/tasks/" + task.getTaskId())
                         .header("authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -229,7 +221,7 @@ class TaskControllerIntegrationTest {
         Gson gsonRequest = new Gson();
         String jsonRequest = gsonRequest.toJson(commentDto);
         //when
-        mockMvc.perform(post("/task/" + taskId + "/comment")
+        mockMvc.perform(post("/tasks/" + taskId + "/comments")
                         .header("authorization", "Bearer " + token)
                         .param("taskId", taskId)
                         .param("token", token)

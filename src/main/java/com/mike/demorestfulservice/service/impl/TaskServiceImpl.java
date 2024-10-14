@@ -18,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,17 +33,17 @@ public class TaskServiceImpl implements TaskService {
     private EntityMapperImpl mapper;
 
     @Override
-    public TaskListResponseDto getAllTasksByAuthor(Long userId, List<String> fields, int pageNo, int pageSize, String priority, String status) {
+    public TaskListResponseDto getAllTasksByAuthor(Long userId, int pageNo, int pageSize, String priority, String status) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Task> tasks = taskRepository.findAllByAuthor_UserId(userId, pageable);
-        return getTaskListToTaskListResponseDto(tasks, fields, priority, status);
+        return getTaskListToTaskListResponseDto(tasks, priority, status);
     }
 
     @Override
-    public TaskListResponseDto getAllTasksByExecutor(Long userId, List<String> fields, int pageNo, int pageSize, String priority, String status) {
+    public TaskListResponseDto getAllTasksByExecutor(Long userId, int pageNo, int pageSize, String priority, String status) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Task> tasks = taskRepository.findAllByExecutor_UserId(userId, pageable);
-        return getTaskListToTaskListResponseDto(tasks, fields, priority, status);
+        return getTaskListToTaskListResponseDto(tasks, priority, status);
     }
 
     @Override
@@ -84,7 +83,7 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
         if (!task.getAuthor().getUserId().equals(user.getUserId())) {
-            throw new EntityNotFoundException("only the author can update the task priority and appoint an executor");
+            throw new EntityNotFoundException("only author can update the task priority and appoint an executor");
         }
         if (taskDto.getText() != null) {
             task.setText(taskDto.getText());
@@ -117,7 +116,7 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
         if (!task.getExecutor().getUserId().equals(user.getUserId())) {
-            throw new EntityNotFoundException("only the author can update the task priority and appoint an executor");
+            throw new EntityNotFoundException("only author can update the task priority and appoint an executor");
         }
         if (taskDto.getStatus() != null) {
             task.setStatus(Status.valueOf(taskDto.getStatus()));
@@ -130,16 +129,16 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(String token, Long userId, Long taskId) {
+    public void deleteTask(String token, Long taskId) {
         Task task = taskRepository.findById(taskId).orElseThrow(() ->
                 new EntityNotFoundException(String.format("Task with Id %s not found", taskId)));
         String email = jwtService.getEmailFromToken(token.substring(7));
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new EntityNotFoundException(String.format("User with email %s not found", email)));
-        if (userId.equals(task.getAuthor().getUserId()) && userId.equals(user.getUserId())) {
+        if (task.getAuthor().getUserId().equals(user.getUserId())) {
             taskRepository.delete(task);
         } else {
-            throw new EntityNotFoundException("only the author can delete the task");
+            throw new EntityNotFoundException("only author can delete the task");
         }
     }
 
@@ -160,7 +159,7 @@ public class TaskServiceImpl implements TaskService {
         return getTaskCommentsDto(task);
     }
 
-    private TaskListResponseDto getTaskListToTaskListResponseDto(Page<Task> tasks, List<String> fields, String priority, String status) {
+    private TaskListResponseDto getTaskListToTaskListResponseDto(Page<Task> tasks, String priority, String status) {
         List<Task> taskList = tasks.getContent();
         if (priority != null) {
             taskList = taskList.stream().filter(t -> t.getPriority().toString().equals(priority)).collect(Collectors.toList());
@@ -168,12 +167,10 @@ public class TaskServiceImpl implements TaskService {
         if (status != null) {
             taskList = taskList.stream().filter(t -> t.getStatus().toString().equals(status)).collect(Collectors.toList());
         }
-        if (fields != null) {
-            taskList = taskList.stream().map(t -> filterFields(t, fields)).collect(Collectors.toList());
-        }
+
         List<TaskDto> content = new ArrayList<>();
         for (Task task : taskList) {
-            var taskDto = mapper.toTaskDto(task);
+            TaskDto taskDto = mapper.toTaskDto(task);
             if (task.getExecutor() != null) {
                 taskDto.setExecutorId(task.getExecutor().getUserId().toString());
             }
@@ -187,20 +184,6 @@ public class TaskServiceImpl implements TaskService {
                 .totalPages(tasks.getTotalPages())
                 .last(tasks.isLast())
                 .build();
-    }
-
-    private Task filterFields(Task task, List<String> fields) {
-        Task filteredTask = new Task();
-        for (String field : fields) {
-            try {
-                Field f = task.getClass().getDeclaredField(field);
-                f.setAccessible(true);
-                f.set(filteredTask, f.get(field));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return filteredTask;
     }
 
     private TaskCommentsDto getTaskCommentsDto(Task task) {

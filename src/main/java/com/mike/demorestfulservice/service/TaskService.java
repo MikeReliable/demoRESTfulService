@@ -5,13 +5,11 @@ import com.mike.demorestfulservice.dto.TaskCommentsDto;
 import com.mike.demorestfulservice.dto.TaskDto;
 import com.mike.demorestfulservice.dto.TaskListResponseDto;
 
-import java.util.List;
-
 public interface TaskService {
 
-    TaskListResponseDto getAllTasksByAuthor(Long userId, List<String> fields, int pageNo, int pageSize, String priority, String status);
+    TaskListResponseDto getAllTasksByAuthor(Long userId, int pageNo, int pageSize, String priority, String status);
 
-    TaskListResponseDto getAllTasksByExecutor(Long userId, List<String> fields, int pageNo, int pageSize, String priority, String status);
+    TaskListResponseDto getAllTasksByExecutor(Long userId, int pageNo, int pageSize, String priority, String status);
 
     TaskDto createTask(String token, Long userId, TaskDto taskDto) throws Exception;
 
@@ -21,7 +19,7 @@ public interface TaskService {
 
     TaskDto updateTaskByExecutor(String token, Long taskId, TaskDto taskDto);
 
-    void deleteTask(String token, Long userId, Long taskId);
+    void deleteTask(String token, Long taskId);
 
     TaskCommentsDto createComment(String token, Long taskId, CommentDto commentDto);
 }

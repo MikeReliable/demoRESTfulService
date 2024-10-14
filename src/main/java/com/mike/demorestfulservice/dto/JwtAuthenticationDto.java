@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-@Schema(description = "Tokens")
+@Schema(description = "Access and refresh tokens")
 public class JwtAuthenticationDto {
 
     private String token;

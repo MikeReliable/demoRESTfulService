@@ -31,8 +31,8 @@ public class SecurityConfig {
     };
 
     private static final String[] AUTH_URL = {
-            "/user/**",
-            "/task/**"
+            "/users/**",
+            "/tasks/**"
     };
 
     private final JwtFilter jwtFilter;
@@ -47,7 +47,7 @@ public class SecurityConfig {
                         .requestMatchers(AUTH_URL).authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout.logoutUrl("user/logout")
+                .logout(logout -> logout.logoutUrl("users/logout")
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()));
         return http.build();

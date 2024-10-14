@@ -1,7 +1,5 @@
 package com.mike.demorestfulservice.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.mike.demorestfulservice.entity.View;
 import io.swagger.v3.oas.annotations.media.Schema;

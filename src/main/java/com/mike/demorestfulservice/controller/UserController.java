@@ -19,7 +19,7 @@ import javax.naming.AuthenticationException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 @Tag(name = "User", description = "Methods for obtaining user information")
 public class UserController {
 
